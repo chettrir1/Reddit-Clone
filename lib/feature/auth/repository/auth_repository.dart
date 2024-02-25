@@ -9,8 +9,7 @@ import 'package:reddit_clone/core/providers/firebase_provider.dart';
 import 'package:reddit_clone/core/type_defs.dart';
 import 'package:reddit_clone/models/user_model.dart';
 
-final authRepositoryProvider = Provider((ref) =>
-    AuthRepository(
+final authRepositoryProvider = Provider((ref) => AuthRepository(
       firestore: ref.read(firestoreProvider),
       auth: ref.read(authProvider),
       googleSignIn: ref.read(
@@ -23,13 +22,11 @@ class AuthRepository {
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
 
-
   AuthRepository({
     required FirebaseFirestore firestore,
     required FirebaseAuth auth,
     required GoogleSignIn googleSignIn,
-  })
-      : _auth = auth,
+  })  : _auth = auth,
         _firestore = firestore,
         _googleSignIn = googleSignIn;
 
@@ -48,13 +45,13 @@ class AuthRepository {
       );
 
       UserCredential userCredential =
-      await _auth.signInWithCredential(credential);
+          await _auth.signInWithCredential(credential);
       UserModel model;
       if (userCredential.additionalUserInfo?.isNewUser == true) {
         model = UserModel(
           name: userCredential.user?.displayName ?? "N/A",
           profilePic:
-          userCredential.user?.photoURL ?? AssetsConstants.avatarDefault,
+              userCredential.user?.photoURL ?? AssetsConstants.avatarDefault,
           banner: AssetsConstants.avatarDefault,
           uid: userCredential.user?.uid ?? "",
           isAuthenticated: true,
@@ -67,7 +64,7 @@ class AuthRepository {
       }
       return right(model);
     } on FirebaseException catch (e) {
-      throw e.message ?? "Something went wrong!";
+      return left(Failure(e.message.toString()));
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -75,6 +72,6 @@ class AuthRepository {
 
   Stream<UserModel> getUserData(String uid) {
     return _users.doc(uid).snapshots().map(
-            (event) => UserModel.fromMap(event.data() as Map<String, dynamic>));
+        (event) => UserModel.fromMap(event.data() as Map<String, dynamic>));
   }
 }
