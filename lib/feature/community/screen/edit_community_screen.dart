@@ -38,8 +38,8 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
               body: Column(
                 children: [
                   DottedBorder(
-                      radius: Radius.circular(4),
-                      dashPattern: [10, 4],
+                      radius: const Radius.circular(4),
+                      dashPattern: const [10, 4],
                       strokeCap: StrokeCap.round,
                       color: Palette.darkModeAppTheme.textTheme.bodyMedium!.color!,
                       child: Container(
