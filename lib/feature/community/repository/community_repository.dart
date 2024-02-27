@@ -55,4 +55,15 @@ class CommunityRepository {
     return _communities.doc(name).snapshots().map((event) =>
         CommunityModel.fromMap(event.data() as Map<String, dynamic>));
   }
+
+  FutureEitherVoid editCommunity(CommunityModel communityModel) async {
+    try {
+      return right(
+          _communities.doc(communityModel.name).update(communityModel.toMap()));
+    } on FirebaseException catch (e) {
+      throw e.toString();
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
 }
