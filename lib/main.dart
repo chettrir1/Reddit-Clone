@@ -33,7 +33,6 @@ class _MyAppState extends ConsumerState<MyApp> {
         .getUserData(data.uid)
         .first;
     ref.read(userProvider.notifier).update((state) => userModel);
-    setState(() {});
   }
 
   @override
@@ -50,7 +49,7 @@ class _MyAppState extends ConsumerState<MyApp> {
                     return loggedInRoute;
                   }
                 }
-                return loggedInRoute;
+                return loggedOutRoute;
               }),
               routeInformationParser: const RoutemasterParser(),
             ),
