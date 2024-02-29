@@ -4,6 +4,7 @@ import 'package:reddit_clone/core/common/error_text.dart';
 import 'package:reddit_clone/core/common/loader.dart';
 import 'package:reddit_clone/feature/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/feature/community/controller/community_controller.dart';
+import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -14,6 +15,13 @@ class CommunityScreen extends ConsumerWidget {
 
   void navigateToModTools(BuildContext context) {
     Routemaster.of(context).push('/mod-tools/$name');
+  }
+
+  void joinCommunity(
+      WidgetRef ref, CommunityModel communityModel, BuildContext context) {
+    ref
+        .read(communityControllerProvider.notifier)
+        .joinCommunity(communityModel, context);
   }
 
   @override
@@ -78,7 +86,8 @@ class CommunityScreen extends ConsumerWidget {
                                       ),
                                     )
                                   : OutlinedButton(
-                                      onPressed: () {},
+                                      onPressed: () => joinCommunity(
+                                          ref, community, context),
                                       style: ElevatedButton.styleFrom(
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
