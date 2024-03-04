@@ -9,6 +9,13 @@ import 'package:reddit_clone/feature/user_profile/repository/user_profile_reposi
 import 'package:reddit_clone/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
 
+final userProfileControllerProvider =
+    StateNotifierProvider<UserProfileController, bool>((ref) =>
+        UserProfileController(
+            userProfileRepository: ref.watch(userProfileRepositoryProvider),
+            ref: ref,
+            storageRepository: ref.watch(storageRepositoryProvider)));
+
 class UserProfileController extends StateNotifier<bool> {
   final UserProfileRepository _userProfileRepository;
   final Ref _ref;
