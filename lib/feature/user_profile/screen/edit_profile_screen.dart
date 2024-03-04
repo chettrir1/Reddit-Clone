@@ -23,6 +23,13 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   File? bannerFile;
   File? profileFile;
+  late TextEditingController nameController;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: ref.read(userProvider)!.name);
+  }
 
   void selectBannerImage() async {
     final result = await pickImage();
@@ -43,6 +50,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   void save(User user) {}
+
+  @override
+  void dispose() {
+    super.dispose();
+    nameController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +102,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                           bannerFile!,
                                         )
                                       : (user.banner.isEmpty ||
-                                      user.banner ==
+                                              user.banner ==
                                                   AssetsConstants.bannerDefault)
                                           ? const Center(
                                               child: Icon(
@@ -118,6 +131,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           )
                         ],
                       ),
+                    ),
+                    TextField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                          filled: true,
+                          hintText: "Name",
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(10)),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(18)),
                     )
                   ],
                 ),
