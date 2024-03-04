@@ -7,6 +7,7 @@ import 'package:reddit_clone/feature/community/screen/create_community_screen.da
 import 'package:reddit_clone/feature/community/screen/edit_community_screen.dart';
 import 'package:reddit_clone/feature/community/screen/mod_tools_screen.dart';
 import 'package:reddit_clone/feature/home/screen/home_screen.dart';
+import 'package:reddit_clone/feature/user_profile/screen/user_profile_screen.dart';
 import 'package:routemaster/routemaster.dart';
 
 final loggedOutRoute = RouteMap(routes: {
@@ -34,5 +35,9 @@ final loggedInRoute = RouteMap(routes: {
   '/add-mods/:name': (route) => MaterialPage(
           child: AddModsScreen(
         name: route.pathParameters['name'] ?? "",
+      )),
+  '/u/:uid': (route) => MaterialPage(
+          child: UserProfileScreen(
+        uid: route.pathParameters['uid'] ?? "",
       )),
 });
