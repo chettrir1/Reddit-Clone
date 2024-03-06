@@ -41,7 +41,7 @@ class UserProfileController extends StateNotifier<bool> {
 
     if (profileFile != null) {
       final response = await _storageRepository.storeFile(
-          path: 'users/profile', id: user.uid, file: profileFile);
+          path: 'users/profilePic', id: user.uid, file: profileFile);
       response.fold((l) => showSnackBar(context, l.message),
           (r) => user = user.copyWith(profilePic: r));
     }
