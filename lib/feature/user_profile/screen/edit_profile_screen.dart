@@ -156,7 +156,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                         const BorderSide(color: Colors.blue),
                                     borderRadius: BorderRadius.circular(10)),
                                 border: InputBorder.none,
-                                contentPadding: EdgeInsets.all(18)),
+                                contentPadding: const EdgeInsets.all(18)),
                           )
                         ],
                       ),
