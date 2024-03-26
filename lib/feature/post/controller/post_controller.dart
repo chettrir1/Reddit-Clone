@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/core/providers/storage_repository_provider.dart';
@@ -53,6 +55,76 @@ class PostController extends StateNotifier<bool> {
     response.fold((error) => showSnackBar(context, error.message), (r) {
       showSnackBar(context, "Posted successfully!");
       Routemaster.of(context).pop();
+    });
+  }
+
+  void shareLinktPost({
+    required BuildContext context,
+    required String title,
+    required CommunityModel selectedCommunity,
+    required String link,
+  }) async {
+    state = true;
+    String postId = const Uuid().v1();
+    final user = _ref.read(userProvider);
+
+    final PostModel postModel = PostModel(
+        id: postId,
+        title: title,
+        communityName: selectedCommunity.name,
+        communityProfilePic: selectedCommunity.avatar,
+        upvotes: [],
+        downvotes: [],
+        commentCount: 0,
+        username: user!.name,
+        uid: user.uid,
+        type: "link",
+        createdAt: DateTime.now(),
+        awards: [],
+        link: link);
+
+    final response = await _postRepository.addPost(postModel);
+    state = false;
+    response.fold((error) => showSnackBar(context, error.message), (r) {
+      showSnackBar(context, "Posted successfully!");
+      Routemaster.of(context).pop();
+    });
+  }
+
+  void shareImagePost({
+    required BuildContext context,
+    required String title,
+    required CommunityModel selectedCommunity,
+    required File? file,
+  }) async {
+    state = true;
+    String postId = const Uuid().v1();
+    final user = _ref.read(userProvider);
+    final imageRes = await _storageRepository.storeFile(
+        path: 'posts/${selectedCommunity.name}', id: postId, file: file);
+
+    imageRes.fold((error) => showSnackBar(context, error.message), (r) async {
+      final PostModel postModel = PostModel(
+          id: postId,
+          title: title,
+          communityName: selectedCommunity.name,
+          communityProfilePic: selectedCommunity.avatar,
+          upvotes: [],
+          downvotes: [],
+          commentCount: 0,
+          username: user!.name,
+          uid: user.uid,
+          type: "text",
+          createdAt: DateTime.now(),
+          awards: [],
+          link: r);
+
+      final response = await _postRepository.addPost(postModel);
+      state = false;
+      response.fold((error) => showSnackBar(context, error.message), (r) {
+        showSnackBar(context, "Posted successfully!");
+        Routemaster.of(context).pop();
+      });
     });
   }
 }
