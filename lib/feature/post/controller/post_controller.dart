@@ -11,6 +11,13 @@ import 'package:reddit_clone/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
 
+final postControllerProvider =
+StateNotifierProvider<PostController, bool>((ref) =>
+    PostController(
+        postRepository: ref.watch(postRepositoryProvider),
+        ref: ref,
+        storageRepository: ref.watch(storageRepositoryProvider)));
+
 class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
   final Ref _ref;

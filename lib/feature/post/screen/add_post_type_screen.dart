@@ -1,14 +1,13 @@
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/core/common/error_text.dart';
 import 'package:reddit_clone/core/common/loader.dart';
 import 'package:reddit_clone/core/utils.dart';
 import 'package:reddit_clone/feature/community/controller/community_controller.dart';
+import 'package:reddit_clone/feature/post/controller/post_controller.dart';
 import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/theme/palette.dart';
 
@@ -38,6 +37,34 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
     }
   }
 
+  void sharePost() async {
+    if (widget.type == 'image' &&
+        bannerFile != null &&
+        titleController.text.isNotEmpty) {
+      ref.read(postControllerProvider.notifier).shareImagePost(
+          context: context,
+          title: titleController.text.trim(),
+          selectedCommunity: selectedCommunity ?? communities[0],
+          file: bannerFile);
+    } else if (widget.type == 'text' && titleController.text.isNotEmpty) {
+      ref.read(postControllerProvider.notifier).shareTextPost(
+          context: context,
+          title: titleController.text.trim(),
+          selectedCommunity: selectedCommunity ?? communities[0],
+          description: descriptionController.text.trim());
+    } else if (widget.type == 'link' &&
+        titleController.text.isNotEmpty &&
+        linkController.text.isNotEmpty) {
+      ref.read(postControllerProvider.notifier).shareLinktPost(
+          context: context,
+          title: titleController.text.trim(),
+          selectedCommunity: selectedCommunity ?? communities[0],
+          link: linkController.text.trim());
+    } else {
+      showSnackBar(context, 'Please enter all the fields');
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -58,7 +85,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
         title: Text("Post ${widget.type}"),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: sharePost,
             child: Text(
               "Share",
               style: TextStyle(
@@ -147,9 +174,8 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
                   return DropdownButton(
                       value: selectedCommunity ?? data[0],
                       items: data
-                          .map((e) => DropdownMenuItem(
-                              value:e,
-                              child: Text(e.name)))
+                          .map((e) =>
+                              DropdownMenuItem(value: e, child: Text(e.name)))
                           .toList(),
                       onChanged: (val) {
                         setState(() {
