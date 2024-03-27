@@ -190,7 +190,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
                       },
                       error: (error, stackTrace) =>
                           ErrorText(error: error.toString()),
-                      loading: () => Loader())
+                      loading: () => const Loader())
                 ],
               ),
             ),

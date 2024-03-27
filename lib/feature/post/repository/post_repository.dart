@@ -24,12 +24,26 @@ class PostRepository {
 
   FutureEitherVoid addPost(PostModel postModel) async {
     try {
-      return right(
-          _posts.doc(postModel.id).set(postModel.toMap()));
+      return right(_posts.doc(postModel.id).set(postModel.toMap()));
     } on FirebaseException catch (e) {
       return left(Failure(e.message.toString()));
     } catch (e) {
       return left(Failure(e.toString()));
     }
   }
+
+  Stream<List<PostModel>> fetchUserPosts(List<CommunityModel> communities) {
+    return _posts
+        .where('communityName',
+        whereIn: communities.map((e) => e.name).toList())
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (event) =>
+          event.docs
+              .map((e) => PostModel.fromMap(e.data() as Map<String, dynamic>))
+              .toList(),
+    );
+  }
+
 }
