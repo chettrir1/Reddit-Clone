@@ -11,12 +11,17 @@ import 'package:reddit_clone/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
 
-final postControllerProvider =
-StateNotifierProvider<PostController, bool>((ref) =>
-    PostController(
+final postControllerProvider = StateNotifierProvider<PostController, bool>(
+    (ref) => PostController(
         postRepository: ref.watch(postRepositoryProvider),
         ref: ref,
         storageRepository: ref.watch(storageRepositoryProvider)));
+
+final userPostsProvider =
+    StreamProvider.family((ref, List<CommunityModel> communities) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.fetchUserPosts(communities);
+});
 
 class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
@@ -133,5 +138,13 @@ class PostController extends StateNotifier<bool> {
         Routemaster.of(context).pop();
       });
     });
+  }
+
+  Stream<List<PostModel>> fetchUserPosts(List<CommunityModel> communities) {
+    if (communities.isNotEmpty) {
+      return _postRepository.fetchUserPosts(communities);
+    }
+
+    return Stream.value([]);
   }
 }
